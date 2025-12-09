@@ -1,0 +1,378 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Supervised Learning\"\n",
+        "format: \n",
+        "  html:\n",
+        "    toc: true\n",
+        "    code-fold: true\n",
+        "    embed-resources: true\n",
+        "editor: visual\n",
+        "---\n",
+        "\n",
+        "### Supervised Learning\n",
+        "\n",
+        "### Setup"
+      ],
+      "id": "ced337c8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "from sklearn.metrics import root_mean_squared_error\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "\n",
+        "\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.preprocessing import StandardScaler\n",
+        "from sklearn.linear_model import LinearRegression, LogisticRegression\n",
+        "from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier\n",
+        "from sklearn.metrics import (\n",
+        "    mean_squared_error,\n",
+        "    r2_score,\n",
+        "    accuracy_score,\n",
+        "    roc_auc_score,\n",
+        "    classification_report,\n",
+        ")"
+      ],
+      "id": "7a17abd7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Load data"
+      ],
+      "id": "936c39e4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pga = pd.read_csv(\"data/processed-data/pga_cleaned.csv\")\n",
+        "pga.head()\n",
+        "pga.columns"
+      ],
+      "id": "c3fa8cf1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Regression (Predict Score)"
+      ],
+      "id": "8194dc15"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "reg_features = [\n",
+        "  \"drive_distance\",\n",
+        "  \"gir_pct\",\n",
+        "  \"sg_p\",\n",
+        "  \"sg_ttg\",\n",
+        "]\n",
+        "reg_target = \"scoring\"\n",
+        "\n",
+        "reg_df = pga[reg_features + [reg_target]].dropna()\n",
+        "X_reg = reg_df[reg_features]\n",
+        "y_reg = reg_df[reg_target]\n",
+        "\n",
+        "X_reg.shape, y_reg.shape"
+      ],
+      "id": "180f7d4f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Training and testing split (Predict Score)"
+      ],
+      "id": "50aebf05"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(\n",
+        "X_reg, y_reg, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "scaler_reg = StandardScaler()\n",
+        "X_train_reg_scaled = scaler_reg.fit_transform(X_train_reg)\n",
+        "X_test_reg_scaled = scaler_reg.transform(X_test_reg)"
+      ],
+      "id": "18954283",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Linear Regression (Predict Score)"
+      ],
+      "id": "fc05ac34"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "lin_reg = LinearRegression()\n",
+        "lin_reg.fit(X_train_reg_scaled, y_train_reg)\n",
+        "\n",
+        "y_pred_lin = lin_reg.predict(X_test_reg_scaled)\n",
+        "\n",
+        "rmse_lin = root_mean_squared_error(y_test_reg, y_pred_lin)\n",
+        "r2_lin = r2_score(y_test_reg, y_pred_lin)\n",
+        "\n",
+        "print(\"Linear Regression (Predict Score)\")\n",
+        "print(\" RMSE:\", rmse_lin)\n",
+        "print(\" R^2 :\", r2_lin)"
+      ],
+      "id": "820f5ca0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Random Forest (Predict Score)"
+      ],
+      "id": "5382071c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rf_reg = RandomForestRegressor(\n",
+        "  n_estimators=300,\n",
+        "  random_state=42,\n",
+        "  max_depth=None,\n",
+        "  n_jobs=-1\n",
+        ")\n",
+        "rf_reg.fit(X_train_reg, y_train_reg)\n",
+        "\n",
+        "y_pred_rf = rf_reg.predict(X_test_reg)\n",
+        "\n",
+        "rmse_rf = root_mean_squared_error(y_test_reg, y_pred_rf)\n",
+        "r2_rf = r2_score(y_test_reg, y_pred_rf)\n",
+        "\n",
+        "print(\"Random Forest Regression (Predict Score)\")\n",
+        "print(\"  RMSE:\", rmse_rf)\n",
+        "print(\"  R^2 :\", r2_rf)"
+      ],
+      "id": "e8bab5a3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Feature importance (Predict Score)"
+      ],
+      "id": "ceca52a5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "importances_reg = pd.Series(\n",
+        "rf_reg.feature_importances_,\n",
+        "index=reg_features\n",
+        ").sort_values(ascending=False)\n",
+        "\n",
+        "plt.figure(figsize=(8,5))\n",
+        "sns.barplot(x=importances_reg.values, y=importances_reg.index)\n",
+        "plt.xlabel(\"Feature Importance\")\n",
+        "plt.title(\"RF Feature Importance (Predict Score)\")\n",
+        "plt.tight_layout()\n",
+        "plt.savefig(\"images/supervised_rf_importance_scoring.png\", dpi=300, bbox_inches=\"tight\")\n",
+        "plt.show()\n",
+        "\n",
+        "importances_reg"
+      ],
+      "id": "ab2119c0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Classification Model (Predict Win)"
+      ],
+      "id": "f9aa0078"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pga[\"has_win\"] = (pga[\"win\"] > 0).astype(int)\n",
+        "\n",
+        "clf_features = [\n",
+        "\"drive_distance\",\n",
+        "\"gir_pct\",\n",
+        "\"sg_p\",\n",
+        "\"sg_ttg\",\n",
+        "]\n",
+        "\n",
+        "clf_df = pga[clf_features + [\"has_win\"]].dropna()\n",
+        "X_clf = clf_df[clf_features]\n",
+        "y_clf = clf_df[\"has_win\"]\n",
+        "\n",
+        "X_clf.shape, y_clf.value_counts()"
+      ],
+      "id": "914e2f91",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Training and testing split (Predict Win)"
+      ],
+      "id": "5409a19b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(\n",
+        "X_clf, y_clf, test_size=0.2, random_state=42, stratify=y_clf\n",
+        ")\n",
+        "\n",
+        "scaler_clf = StandardScaler()\n",
+        "X_train_clf_scaled = scaler_clf.fit_transform(X_train_clf)\n",
+        "X_test_clf_scaled = scaler_clf.transform(X_test_clf)"
+      ],
+      "id": "3b9513cb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Logistic Regression (Predict Win)"
+      ],
+      "id": "564f9d05"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "log_reg = LogisticRegression(max_iter=1000)\n",
+        "log_reg.fit(X_train_clf_scaled, y_train_clf)\n",
+        "\n",
+        "y_pred_log = log_reg.predict(X_test_clf_scaled)\n",
+        "y_prob_log = log_reg.predict_proba(X_test_clf_scaled)[:, 1]\n",
+        "\n",
+        "acc_log = accuracy_score(y_test_clf, y_pred_log)\n",
+        "auc_log = roc_auc_score(y_test_clf, y_prob_log)\n",
+        "\n",
+        "print(\"Logistic Regression (Predict Win)\")\n",
+        "print(\"  Accuracy:\", acc_log)\n",
+        "print(\"  ROC AUC :\", auc_log)\n",
+        "print(classification_report(y_test_clf, y_pred_log))"
+      ],
+      "id": "de10e6af",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Random Forest (Predict Win)"
+      ],
+      "id": "5489fac6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rf_clf = RandomForestClassifier(\n",
+        "n_estimators=400,\n",
+        "random_state=42,\n",
+        "max_depth=None,\n",
+        "n_jobs=-1\n",
+        ")\n",
+        "rf_clf.fit(X_train_clf, y_train_clf)\n",
+        "\n",
+        "y_pred_rf_clf = rf_clf.predict(X_test_clf)\n",
+        "y_prob_rf_clf = rf_clf.predict_proba(X_test_clf)[:, 1]\n",
+        "\n",
+        "acc_rf = accuracy_score(y_test_clf, y_pred_rf_clf)\n",
+        "auc_rf = roc_auc_score(y_test_clf, y_prob_rf_clf)\n",
+        "\n",
+        "print(\"Random Forest Classifier (Predict Win)\")\n",
+        "print(\"  Accuracy:\", acc_rf)\n",
+        "print(\"  ROC AUC :\", auc_rf)\n",
+        "print(classification_report(y_test_clf, y_pred_rf_clf))"
+      ],
+      "id": "c995ee15",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#Feature importance (Predict Win)"
+      ],
+      "id": "796dc690"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "importances_clf = pd.Series(\n",
+        "rf_clf.feature_importances_,\n",
+        "index=clf_features\n",
+        ").sort_values(ascending=False)\n",
+        "\n",
+        "plt.figure(figsize=(8,5))\n",
+        "sns.barplot(x=importances_clf.values, y=importances_clf.index)\n",
+        "plt.xlabel(\"Feature Importance\")\n",
+        "plt.title(\"RF Feature Importance (Predict Win)\")\n",
+        "plt.tight_layout()\n",
+        "plt.savefig(\"images/supervised_rf_importance_wins.png\", dpi=300, bbox_inches=\"tight\")\n",
+        "plt.show()\n",
+        "\n",
+        "importances_clf"
+      ],
+      "id": "eaacb352",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "base",
+      "language": "python",
+      "display_name": "Python (base)",
+      "path": "/Users/Daniel/Library/Jupyter/kernels/base"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

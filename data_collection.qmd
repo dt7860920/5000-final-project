@@ -1,0 +1,99 @@
+---
+title: "Data Collection"
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Overview
+
+This project analyzes **PGA Tour player performance from 2007–2022**.\
+Instead of scraping data from PGA live websites, I use two **publicly available raw CSV files** on GitHub to apply for my analysis.
+
+These files are treated as **raw data** and stored in:
+
+**data/ raw-data/ pgatour_raw.csv pga_full.csv**
+
+# Raw Data Sources:
+
+### pgatour_raw.csv — Original PGA Tour Scrape (2007–2017)
+
+A compiled PGA Tour statistics dataset from a public GitHub Repository.
+
+**Source:** Prater, D. (2017). *PGA Tour Data Science Project* \[Dataset\]. GitHub.\
+https://github.com/daronprater/PGA-Tour-Data-Science-Project Example variables:
+
+-   NAME: Player name
+
+-   ROUNDS: Number of rounds played
+
+-   SCORING: Scoring average
+
+-   DRIVE_DISTANCE: Driving distance (yards)
+
+-   FWY\_%: Fairway hit percentage
+
+-   GIR\_%: Greens in regulation percentage
+
+-   SG_P, SG_TTG, SG_T: Strokes gained putting, tee-to-green, and total
+
+-   TOP 10, 1ST: Top-10 finishes and wins
+
+-   Year: Season year
+
+### pga_full.csv — Extended PGA Tour Stats (2017–2022)
+
+A compiled PGA Tour statistics dataset from a public GitHub Repository.
+
+**Source:** Ahmer, C. (2021). *PGA Tour Data Collection and Dashboard* \[Dataset\]. GitHub.\
+https://github.com/charlie-ahmer/PGATour-DataCollectionAndDashboard
+
+Example variables:
+
+-   ScoringAvg: Score average per round
+
+-   BirdieAvg: Average birdie per round
+
+-   DrivingDistance: Average driving distance (yards)
+
+-   GIR%: Greens in regulation percentage
+
+-   Strokes-gained metrics
+
+-   TOP 10, 1ST: Top-10 finishes and wins
+
+-   Year: Season year
+
+```{python}
+import pandas as pd
+
+raw_path = "data/raw-data/pgatour_raw.csv"
+full_path = "data/raw-data/pga_full.csv"
+
+pgatour_raw = pd.read_csv(raw_path, encoding="latin1")  
+pga_full = pd.read_csv(full_path, encoding="latin1")   
+
+pgatour_raw.shape, pga_full.shape
+```
+
+```{python}
+pgatour_raw.head()
+pgatour_raw.columns
+```
+
+```{python}
+pga_full.head()
+pga_full.columns
+```
+
+### Limitations on data sources: 
+* Missing years in the dataset (from 2023-2025)
+* Unable to scrape data directly from PGA website
+* Player name inconsistencies across sources
+* Different data quality between early and late years

@@ -1,0 +1,221 @@
+---
+title: "Supervised Learning"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+editor: visual
+---
+
+### Supervised Learning
+
+### Setup
+
+```{python}
+import pandas as pd
+import numpy as np
+from sklearn.metrics import root_mean_squared_error
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.metrics import (
+    mean_squared_error,
+    r2_score,
+    accuracy_score,
+    roc_auc_score,
+    classification_report,
+)
+```
+
+### Load data
+
+```{python}
+pga = pd.read_csv("data/processed-data/pga_cleaned.csv")
+pga.head()
+pga.columns
+```
+
+### Regression (Predict Score)
+
+```{python}
+reg_features = [
+  "drive_distance",
+  "gir_pct",
+  "sg_p",
+  "sg_ttg",
+]
+reg_target = "scoring"
+
+reg_df = pga[reg_features + [reg_target]].dropna()
+X_reg = reg_df[reg_features]
+y_reg = reg_df[reg_target]
+
+X_reg.shape, y_reg.shape
+```
+
+### Training and testing split (Predict Score)
+
+```{python}
+X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(
+X_reg, y_reg, test_size=0.2, random_state=42
+)
+
+scaler_reg = StandardScaler()
+X_train_reg_scaled = scaler_reg.fit_transform(X_train_reg)
+X_test_reg_scaled = scaler_reg.transform(X_test_reg)
+```
+
+### Linear Regression (Predict Score)
+
+```{python}
+lin_reg = LinearRegression()
+lin_reg.fit(X_train_reg_scaled, y_train_reg)
+
+y_pred_lin = lin_reg.predict(X_test_reg_scaled)
+
+rmse_lin = root_mean_squared_error(y_test_reg, y_pred_lin)
+r2_lin = r2_score(y_test_reg, y_pred_lin)
+
+print("Linear Regression (Predict Score)")
+print(" RMSE:", rmse_lin)
+print(" R^2 :", r2_lin)
+```
+
+### Random Forest (Predict Score)
+
+```{python}
+rf_reg = RandomForestRegressor(
+  n_estimators=300,
+  random_state=42,
+  max_depth=None,
+  n_jobs=-1
+)
+rf_reg.fit(X_train_reg, y_train_reg)
+
+y_pred_rf = rf_reg.predict(X_test_reg)
+
+rmse_rf = root_mean_squared_error(y_test_reg, y_pred_rf)
+r2_rf = r2_score(y_test_reg, y_pred_rf)
+
+print("Random Forest Regression (Predict Score)")
+print("  RMSE:", rmse_rf)
+print("  R^2 :", r2_rf)
+```
+
+### Feature importance (Predict Score)
+
+```{python}
+importances_reg = pd.Series(
+rf_reg.feature_importances_,
+index=reg_features
+).sort_values(ascending=False)
+
+plt.figure(figsize=(8,5))
+sns.barplot(x=importances_reg.values, y=importances_reg.index)
+plt.xlabel("Feature Importance")
+plt.title("RF Feature Importance (Predict Score)")
+plt.tight_layout()
+plt.savefig("images/supervised_rf_importance_scoring.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+importances_reg
+```
+
+### Classification Model (Predict Win)
+
+```{python}
+
+pga["has_win"] = (pga["win"] > 0).astype(int)
+
+clf_features = [
+"drive_distance",
+"gir_pct",
+"sg_p",
+"sg_ttg",
+]
+
+clf_df = pga[clf_features + ["has_win"]].dropna()
+X_clf = clf_df[clf_features]
+y_clf = clf_df["has_win"]
+
+X_clf.shape, y_clf.value_counts()
+```
+
+### Training and testing split (Predict Win)
+
+```{python}
+
+X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(
+X_clf, y_clf, test_size=0.2, random_state=42, stratify=y_clf
+)
+
+scaler_clf = StandardScaler()
+X_train_clf_scaled = scaler_clf.fit_transform(X_train_clf)
+X_test_clf_scaled = scaler_clf.transform(X_test_clf)
+```
+
+### Logistic Regression (Predict Win)
+
+```{python}
+log_reg = LogisticRegression(max_iter=1000)
+log_reg.fit(X_train_clf_scaled, y_train_clf)
+
+y_pred_log = log_reg.predict(X_test_clf_scaled)
+y_prob_log = log_reg.predict_proba(X_test_clf_scaled)[:, 1]
+
+acc_log = accuracy_score(y_test_clf, y_pred_log)
+auc_log = roc_auc_score(y_test_clf, y_prob_log)
+
+print("Logistic Regression (Predict Win)")
+print("  Accuracy:", acc_log)
+print("  ROC AUC :", auc_log)
+print(classification_report(y_test_clf, y_pred_log))
+```
+
+### Random Forest (Predict Win)
+
+```{python}
+rf_clf = RandomForestClassifier(
+n_estimators=400,
+random_state=42,
+max_depth=None,
+n_jobs=-1
+)
+rf_clf.fit(X_train_clf, y_train_clf)
+
+y_pred_rf_clf = rf_clf.predict(X_test_clf)
+y_prob_rf_clf = rf_clf.predict_proba(X_test_clf)[:, 1]
+
+acc_rf = accuracy_score(y_test_clf, y_pred_rf_clf)
+auc_rf = roc_auc_score(y_test_clf, y_prob_rf_clf)
+
+print("Random Forest Classifier (Predict Win)")
+print("  Accuracy:", acc_rf)
+print("  ROC AUC :", auc_rf)
+print(classification_report(y_test_clf, y_pred_rf_clf))
+```
+
+#Feature importance (Predict Win)
+
+```{python}
+importances_clf = pd.Series(
+rf_clf.feature_importances_,
+index=clf_features
+).sort_values(ascending=False)
+
+plt.figure(figsize=(8,5))
+sns.barplot(x=importances_clf.values, y=importances_clf.index)
+plt.xlabel("Feature Importance")
+plt.title("RF Feature Importance (Predict Win)")
+plt.tight_layout()
+plt.savefig("images/supervised_rf_importance_wins.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+importances_clf
+```

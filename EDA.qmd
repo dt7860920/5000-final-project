@@ -1,0 +1,125 @@
+---
+title: "EDA"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+### EDA
+### Load Data
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+path = "data/processed-data/pga_cleaned.csv"
+pga = pd.read_csv(path)
+```
+
+### Distribution of Scoring Average
+```{python}
+year_summary = (
+    pga.groupby("year")["scoring"]
+       .mean()
+       .reset_index()
+)
+
+plt.figure(figsize=(10, 5))
+plt.plot(year_summary["year"], year_summary["scoring"], marker="o")
+plt.gca().invert_yaxis()  
+plt.xlabel("Year")
+plt.ylabel("Average Scoring")
+plt.title("Trend in PGA Tour Scoring Average Over Time")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+yearly_scores = pga.groupby("year")["scoring"].mean().round(3)
+yearly_scores.reset_index().rename(columns={"scoring": "avg_scoring"})
+
+
+```
+### Scoring Average Variance
+```{python}
+plt.figure(figsize=(12,6))
+sns.boxplot(data=pga, x="year", y="scoring")
+plt.xticks(rotation=45)
+plt.title("Distribution of Scoring Averages by Year")
+plt.show()
+
+yearly_spread = (
+    pga.groupby("year")["scoring"]
+       .agg(["mean", "std", "min", "max"])
+       .assign(range=lambda x: x["max"] - x["min"])
+)
+
+yearly_spread
+
+
+```
+
+
+### Driving Distance Distribution
+```{python}
+distance_trend = (
+    pga.groupby("year")["drive_distance"]
+       .mean()
+       .reset_index()
+)
+
+plt.figure(figsize=(10,5))
+plt.plot(distance_trend["year"], distance_trend["drive_distance"], marker="o")
+plt.xlabel("Year")
+plt.ylabel("Avg Driving Distance (yards)")
+plt.title("Trend in Driving Distance Over Time")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+```
+### SG_TTG Distribution
+```{python}
+sgttg_trend = (
+    pga.groupby("year")["sg_ttg"]
+       .mean()
+       .reset_index()
+       .dropna()
+)
+
+plt.figure(figsize=(10, 5))
+plt.plot(sgttg_trend["year"], sgttg_trend["sg_ttg"], marker="o")
+plt.axhline(0, color="gray", linestyle="--", alpha=0.5)
+plt.xlabel("Year")
+plt.ylabel("Average SG Tee-to-Green")
+plt.title("Average SG_TTG by Year")
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+```
+### SG_P Distribution
+```{python}
+sgp_trend = (
+    pga.groupby("year")["sg_p"]
+       .mean()
+       .reset_index()
+       .dropna()
+)
+
+plt.figure(figsize=(10, 5))
+plt.plot(sgp_trend["year"], sgp_trend["sg_p"], marker="o")
+plt.axhline(0, color="gray", linestyle="--", alpha=0.5)
+plt.xlabel("Year")
+plt.ylabel("Average SG Putting")
+plt.title("Average SG_P (Putting) by Year")
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+```

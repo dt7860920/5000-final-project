@@ -1,0 +1,68 @@
+---
+title: "Landing page"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
+---
+
+# 1. Introduction
+
+## 1.1 Motivation
+
+Over the last 15–20 years, professional golf has quietly become a **data-driven sport**. Launch monitors, performance tracking apps, and shot-level databases have transformed how coaches and players think about improvement. Decisions that used to rely on *feel* and memory are now increasingly guided by **numbers**.
+
+One of the most important developments in this shift is the family of **strokes gained (SG)** metrics, which measure how many strokes a player gains or loses on each shot relative to the PGA Tour field. Mark Broadie’s work formally introduced this framework and showed that differences in the **long game** (driving and approach play) explain most of the variation in scoring among PGA Tour players, with putting playing a smaller—though still meaningful—role.
+
+At the same time, official reports from the USGA and R&A document a steady **increase in driving distance** on professional tours since the early 2000s, raising questions about how distance, strategy, and course set-up interact in the modern game.
+
+This project builds on that context by using **publicly available PGA Tour summary datasets (2007–2022)** to ask:
+
+-   How have key performance metrics such as **driving distance** and **strokes gained** evolved over time?
+-   Which metrics are most strongly associated with **lower scoring**?
+-   What separates **winners** from the rest of the field in the modern PGA Tour environment?
+
+By combining data cleaning, exploratory analysis, unsupervised learning (player clustering), and supervised models (scoring and win prediction), the project aims to connect **high-level trends** in the sport with **practical performance insights** for coaches, analysts, and competitive players.
+
+## 1.2 Research Questions
+
+This analysis is organized around six core questions:
+
+1.  **How have key PGA Tour metrics evolved from 2007–2022?**
+    -   Trends in scoring average, driving distance, GIR%, and strokes gained metrics.
+2.  **Are there identifiable “types” of PGA Tour players?**
+    -   Use **unsupervised learning (k-means + PCA)** to uncover clusters such as *elite ball-strikers*, *putting specialists*, and *tour-average grinders*.
+3.  **Which performance metrics best predict scoring average?**
+    -   Compare the predictive power of **SG Tee-to-Green**, **SG Putting**, **GIR%**, and **driving distance** using regression models.
+4.  **What distinguishes winning players from the rest of the field?**
+    -   Model the probability of earning at least one win in a season from SG metrics, GIR%, and distance.
+5.  **Is modern success driven more by strokes gained tee-to-green or putting?**
+    -   Evaluate effect sizes and feature importance from both **scoring** and **win** models, and compare them with prior work that emphasizes the long game.
+6.  **Does added distance directly translate into better scores or more wins when compared to strokes gained metrics?**
+    -   Contrast the role of **raw distance** with more context-aware measures like **SG Tee-to-Green**, which capture not just how far a player hits it, but **how efficiently those shots lower score**.
+
+The rest of the site is structured to walk through this pipeline:
+
+-   **Data Collection** – Documenting and citing the two GitHub datasets used and how they map to PGA Tour concepts.\
+-   **Data Cleaning & Integration** – Reconciling column names, fixing numeric formats, standardizing player names, and merging seasons into a single panel.\
+-   **Exploratory Data Analysis (EDA)** – Visualizing trends and relationships that speak directly to Research Question 1.\
+-   **Unsupervised Learning** – Discovering player archetypes (Question 2).\
+-   **Supervised Learning** – Predicting scoring and wins to address Questions 3–6.\
+-   **Conclusion** – Summarizing key insights, limitations, and possible directions for future work.
+
+## 1.3 References
+
+Broadie, M. (2011). *Assessing Golfer Performance Using Golfmetrics*. Interfaces, 41(1), 17–26.\
+<https://pubsonline.informs.org/doi/abs/10.1287/inte.1100.0532>
+
+Broadie, M. (2014). *Assessing Golfer Performance on the PGA Tour*.\
+<https://faculty.gsb.columbia.edu/michael-broadie/wp-content/uploads/2015/07/QuantifyingGolfersResearch.pdf>
+
+United States Golf Association & The R&A. (2022). *Distance Insights Report – Annual Driving Distance and Clubhead Speed Report*.\
+<https://www.usga.org/content/usga/home-page/advancing-the-game/distance-insights/2022-distance-insights.html>

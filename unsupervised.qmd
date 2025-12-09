@@ -1,0 +1,144 @@
+---
+title: "Unsupervised Learning"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
+---
+
+### Unsupervised Learning
+### Data Import
+```{python}
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+pga = pd.read_csv("data/processed-data/pga_cleaned.csv")
+pga.head()
+```
+### Filter Features
+```{python}
+features = [
+    "scoring",
+    "drive_distance",
+    "gir_pct",
+    "sg_p",
+    "sg_ttg",
+    "sg_t",
+    "top_10",
+    "win"
+]
+
+X = pga[features].dropna()
+X.head()
+```
+### Scale
+```{python}
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+```
+### Calculate optimal K mean
+```{python}
+inertia = []
+K_range = range(2, 10)
+
+for k in K_range:
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    km.fit(X_scaled)
+    inertia.append(km.inertia_)
+
+plt.figure(figsize=(8,5))
+plt.plot(K_range, inertia, marker='o')
+plt.xlabel("Number of Clusters (k)")
+plt.ylabel("Inertia (Within-Cluster SSE)")
+plt.title("Elbow Method for Optimal k")
+plt.grid(True)
+plt.show()
+
+```
+
+### Set K mean as 4
+```{python}
+kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
+clusters = kmeans.fit_predict(X_scaled)
+
+pga_clusters = pga.loc[X.index].copy()
+pga_clusters["cluster"] = clusters
+```
+
+### PCA graph
+```{python}
+from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2)
+coords = pca.fit_transform(X_scaled)
+
+pga_clusters["PC1"] = coords[:,0]
+pga_clusters["PC2"] = coords[:,1]
+
+plt.figure(figsize=(8,6))
+sns.scatterplot(
+    data=pga_clusters,
+    x="PC1", y="PC2",
+    hue="cluster", palette="tab10", alpha=0.6
+)
+plt.title("PCA Visualization of Player Clusters")
+plt.savefig("images/pca_clusters.png", dpi=300, bbox_inches="tight")
+plt.show()
+```
+
+### Cluster Profile
+```{python}
+cluster_profile = pga_clusters.groupby("cluster")[features].mean().round(2)
+cluster_profile
+```
+
+### Cluster player names
+```{python}
+pga_clusters = pga.loc[X.index].copy()
+pga_clusters["cluster"] = clusters
+
+
+def show_players(df, cluster_id, sort_col="scoring", n=15):
+    return (
+        df[df["cluster"] == cluster_id]
+        .sort_values(sort_col)
+        [["name", "year", "scoring", "sg_ttg", "sg_p", "top_10", "win"]]
+        .head(n)
+    )
+
+show_players(pga_clusters, 0, sort_col="scoring", n=20)
+show_players(pga_clusters, 1, sort_col="scoring", n=20)
+show_players(pga_clusters, 2, sort_col="scoring", n=20)
+show_players(pga_clusters, 3, sort_col="sg_p", n=20)
+```
+
+### Display distinct three names for each clusters as an example
+```{python}
+from IPython.display import display
+
+def pick_players(df, cluster_id, n=3):
+    cluster_df = (
+        df[df["cluster"] == cluster_id]
+        .sort_values(["year", "scoring"])
+        [["name", "year", "scoring", "sg_ttg", "sg_p", "top_10", "win"]]
+        .drop_duplicates(subset=["name"])  
+    )
+    return cluster_df.head(n)
+
+for c in range(4):
+    print(f"\n=== Cluster {c} ===")
+    display(pick_players(pga_clusters, c, n=3))
+    
+```
+

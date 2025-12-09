@@ -1,0 +1,28 @@
+project:
+  type: website
+
+website:
+  title: "PGA Performance Analysis (2007–2022)"
+  navbar:
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Data Collection"
+        file: data_collection.qmd
+      - text: "Data Cleaning"
+        file: data_cleaning.qmd
+      - text: "EDA"
+        file: EDA.qmd
+      - text: "Unsupervised Learning"
+        file: unsupervised.qmd
+      - text: "Supervised Learning"
+        file: supervised.qmd
+      - text: "Final Report"
+        file: report.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    smooth-scroll: true

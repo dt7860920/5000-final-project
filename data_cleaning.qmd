@@ -1,0 +1,221 @@
+---
+title: "Data Cleaning"
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+### Data Cleaning
+Load Data: This step establishes the two primary data sources that will later be merged into a unified dataset for analysis.
+```{python}
+import pandas as pd
+import numpy as np
+
+raw_path = "data/raw-data/pgatour_raw.csv"
+full_path = "data/raw-data/pga_full.csv"
+
+df_raw = pd.read_csv(raw_path, encoding="latin1")
+df_full = pd.read_csv(full_path, encoding="latin1")
+```
+
+### Helper Function
+Before cleaning the data, I define several helper functions designed to standardize formatting across both datasets.
+
+**Clean column names: **
+
+* Converts names to lowercase
+
+* Replaces spaces with underscores
+
+* Removes stray punctuation
+
+* Standardizes percent signs (%)
+
+
+**Clean numeric data: **
+
+* Commas
+
+* Dollar signs
+
+* Percentage symbols
+
+**Clean player name: **
+
+* Extra spaces
+
+* Commas
+
+* Inconsistent capitalization
+```{python}
+
+def clean_column_names(df):
+    df = df.copy()
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+        .str.replace("%", "pct")
+        .str.replace(".", "_")
+    )
+    return df
+
+def clean_numeric(series):
+    return (
+        series.astype(str)
+        .str.replace(",", "", regex=False)
+        .str.replace("$", "", regex=False)
+        .str.replace("%", "", regex=False)
+        .replace("", np.nan)
+        .astype(float)
+    )
+
+def clean_player_name(name):
+    name = str(name)
+    name = name.replace(",", "").strip()
+    return name.title()
+```
+
+### Standardize Player Names
+I apply the name-cleaning function to both datasets, so names can be recignized during the merging process.
+```{python}
+if "name" in df_raw.columns:
+    df_raw["name"] = df_raw["name"].apply(clean_player_name)
+if "name" in df_full.columns:
+    df_full["name"] = df_full["name"].apply(clean_player_name)
+```
+
+### Fix Numeric Columns
+I apply the clean_numeric function to standardize all the columns with numeric data
+```{python}
+numeric_raw = [
+    "rounds", "scoring", "drive_distance",
+    "gir_pct", "sg_p", "sg_ttg", "sg_t",
+    "top_10", "win"
+]
+numeric_full = [
+    "rounds", "scoring", "birdie_avg", "drive_distance",
+    "gir_pct", "sg_p", "sg_ttg", "sg_t",
+    "top_10", "win"
+]
+
+for col in numeric_raw:
+    if col in df_raw.columns:
+        df_raw[col] = clean_numeric(df_raw[col])
+
+for col in numeric_full:
+    if col in df_full.columns:
+        df_full[col] = clean_numeric(df_full[col])
+
+# Year should be numeric
+for df in [df_raw, df_full]:
+    if "year" in df.columns:
+        df["year"] = pd.to_numeric(df["year"], errors="coerce").astype("Int64")
+
+```
+
+### Standardize Column Names
+I standardized all the column names for both datasets, making the merge process much easier.
+```{python}
+df_raw = clean_column_names(df_raw)
+df_full = clean_column_names(df_full)
+
+df_full = df_full.rename(columns={
+    "player": "name",
+    "scoringavg": "scoring",
+    "birdieavg": "birdie_avg",
+    "drivingdistance": "drive_distance",
+    "gir": "gir_pct",
+    "girpct": "gir_pct",
+    "sg_putting": "sg_p",
+    "sg_total": "sg_t",
+    "sg_teetogreen": "sg_ttg",
+    "top10finishes": "top_10",
+    "wins": "win"
+})
+
+# ---- pgatour_raw.csv ----
+df_raw = df_raw.rename(columns={
+    "top_10": "top_10",
+    "1st": "win",
+    "1_st": "win",
+    "1st_": "win",
+    "gir__pct": "gir_pct",   # depending on how the % got mapped
+    "gir_pct": "gir_pct",
+    "fwy__pct": "fwy_pct",
+    "fwy_pct": "fwy_pct"
+})
+```
+
+### Select Overlapping Features in both Dataset
+* Select the wanted columns
+* Drop all the overlapping features
+```{python}
+standard_cols = [
+    "name", "year", "country",
+    "scoring",
+    "drive_distance", "gir_pct",
+    "sg_p", "sg_ttg", "sg_t",
+    "top_10", "win"
+]
+
+for col in standard_cols:
+    if col not in df_raw.columns:
+        df_raw[col] = pd.NA
+    if col not in df_full.columns:
+        df_full[col] = pd.NA
+
+df_raw_std = df_raw[standard_cols]
+df_full_std = df_full[standard_cols]
+```
+
+### Data Merging
+Merge both datasets into one uniformed dataframe.
+Problem: I realized that the players who did not win or get top 10 have null in their column instead of one. This will cause en error during the analysis process, so I replaced all the null with 0.
+Then I dropped duplicate players and keep the one with less missing data.
+```{python}
+combined = pd.concat([df_raw_std, df_full_std], ignore_index=True)
+
+combined["win"] = combined["win"].fillna(0).astype("Int64")
+combined["top_10"] = combined["top_10"].fillna(0).astype("Int64")
+
+combined["non_na_count"] = combined.notna().sum(axis=1)
+
+combined = (
+    combined.sort_values(["name", "year", "non_na_count"])
+            .drop_duplicates(subset=["name", "year"], keep="last")
+            .drop(columns="non_na_count")
+)
+
+print("Final shape:", combined.shape)
+print(combined.head())
+```
+
+## Save Merged Data
+
+```{python}
+output_path = "data/processed-data/pga_cleaned.csv"
+combined.to_csv(output_path, index=False)
+output_path
+```
+
+## Before & After Comparison
+Confirm the transformation
+```{python}
+df_raw.head()
+df_full.head()
+combined.head()
+```
+
+# Limitations on data cleaning:
+* Replacing missing wins and top 10s with zero can introduce bias
+* Removing characters like % and $ in the numeric columns may loses context
+* Missing data imputation was not used, leaving missing stats as NaN
+

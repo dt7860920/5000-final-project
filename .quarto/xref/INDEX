@@ -1,0 +1,29 @@
+{
+  "unsupervised.qmd": {
+    "unsupervised.html": "2013e31e"
+  },
+  "data_collection/main.ipynb": {
+    "main.html": "8e667ccf"
+  },
+  "EDA.qmd": {
+    "EDA.html": "efd93959"
+  },
+  "index.qmd": {
+    "index.html": "85a4d05f"
+  },
+  "supervised.qmd": {
+    "supervised.html": "bb51bc0d"
+  },
+  "data_cleaning.qmd": {
+    "data_cleaning.html": "bf4e40da"
+  },
+  "report.qmd": {
+    "report.html": "a368cdd3"
+  },
+  "data_collection.qmd": {
+    "data_collection.html": "bccf2772"
+  },
+  "data_collection_cleaning/main.ipynb": {
+    "main.html": "aec6247e"
+  }
+}

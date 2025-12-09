@@ -1,0 +1,276 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Unsupervised Learning\"\n",
+        "format: \n",
+        "  html:\n",
+        "    toc: true\n",
+        "    code-fold: true\n",
+        "    embed-resources: true\n",
+        "execute:\n",
+        "  echo: true\n",
+        "  warning: false\n",
+        "  message: false\n",
+        "editor: visual\n",
+        "---\n",
+        "\n",
+        "### Unsupervised Learning\n",
+        "### Data Import"
+      ],
+      "id": "b71926a7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "from sklearn.preprocessing import StandardScaler\n",
+        "import matplotlib.pyplot as plt\n",
+        "from sklearn.cluster import KMeans\n",
+        "import seaborn as sns\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "pga = pd.read_csv(\"data/processed-data/pga_cleaned.csv\")\n",
+        "pga.head()"
+      ],
+      "id": "1790f9f5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Filter Features"
+      ],
+      "id": "47a7c4ad"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "features = [\n",
+        "    \"scoring\",\n",
+        "    \"drive_distance\",\n",
+        "    \"gir_pct\",\n",
+        "    \"sg_p\",\n",
+        "    \"sg_ttg\",\n",
+        "    \"sg_t\",\n",
+        "    \"top_10\",\n",
+        "    \"win\"\n",
+        "]\n",
+        "\n",
+        "X = pga[features].dropna()\n",
+        "X.head()"
+      ],
+      "id": "4f687163",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Scale"
+      ],
+      "id": "c999ea1c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scaler = StandardScaler()\n",
+        "X_scaled = scaler.fit_transform(X)"
+      ],
+      "id": "97157503",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Calculate optimal K mean"
+      ],
+      "id": "cbf3ff15"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "inertia = []\n",
+        "K_range = range(2, 10)\n",
+        "\n",
+        "for k in K_range:\n",
+        "    km = KMeans(n_clusters=k, random_state=42, n_init=10)\n",
+        "    km.fit(X_scaled)\n",
+        "    inertia.append(km.inertia_)\n",
+        "\n",
+        "plt.figure(figsize=(8,5))\n",
+        "plt.plot(K_range, inertia, marker='o')\n",
+        "plt.xlabel(\"Number of Clusters (k)\")\n",
+        "plt.ylabel(\"Inertia (Within-Cluster SSE)\")\n",
+        "plt.title(\"Elbow Method for Optimal k\")\n",
+        "plt.grid(True)\n",
+        "plt.show()"
+      ],
+      "id": "6f1af7bf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Set K mean as 4"
+      ],
+      "id": "f34b763b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)\n",
+        "clusters = kmeans.fit_predict(X_scaled)\n",
+        "\n",
+        "pga_clusters = pga.loc[X.index].copy()\n",
+        "pga_clusters[\"cluster\"] = clusters"
+      ],
+      "id": "631582f0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### PCA graph"
+      ],
+      "id": "a214f70f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from sklearn.decomposition import PCA\n",
+        "\n",
+        "pca = PCA(n_components=2)\n",
+        "coords = pca.fit_transform(X_scaled)\n",
+        "\n",
+        "pga_clusters[\"PC1\"] = coords[:,0]\n",
+        "pga_clusters[\"PC2\"] = coords[:,1]\n",
+        "\n",
+        "plt.figure(figsize=(8,6))\n",
+        "sns.scatterplot(\n",
+        "    data=pga_clusters,\n",
+        "    x=\"PC1\", y=\"PC2\",\n",
+        "    hue=\"cluster\", palette=\"tab10\", alpha=0.6\n",
+        ")\n",
+        "plt.title(\"PCA Visualization of Player Clusters\")\n",
+        "plt.savefig(\"images/pca_clusters.png\", dpi=300, bbox_inches=\"tight\")\n",
+        "plt.show()"
+      ],
+      "id": "fba9acb0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Cluster Profile"
+      ],
+      "id": "ad2cf72e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cluster_profile = pga_clusters.groupby(\"cluster\")[features].mean().round(2)\n",
+        "cluster_profile"
+      ],
+      "id": "37b34797",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Cluster player names"
+      ],
+      "id": "245e3cbd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pga_clusters = pga.loc[X.index].copy()\n",
+        "pga_clusters[\"cluster\"] = clusters\n",
+        "\n",
+        "\n",
+        "def show_players(df, cluster_id, sort_col=\"scoring\", n=15):\n",
+        "    return (\n",
+        "        df[df[\"cluster\"] == cluster_id]\n",
+        "        .sort_values(sort_col)\n",
+        "        [[\"name\", \"year\", \"scoring\", \"sg_ttg\", \"sg_p\", \"top_10\", \"win\"]]\n",
+        "        .head(n)\n",
+        "    )\n",
+        "\n",
+        "show_players(pga_clusters, 0, sort_col=\"scoring\", n=20)\n",
+        "show_players(pga_clusters, 1, sort_col=\"scoring\", n=20)\n",
+        "show_players(pga_clusters, 2, sort_col=\"scoring\", n=20)\n",
+        "show_players(pga_clusters, 3, sort_col=\"sg_p\", n=20)"
+      ],
+      "id": "f1030d34",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Display distinct three names for each clusters as an example"
+      ],
+      "id": "f7d960ec"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from IPython.display import display\n",
+        "\n",
+        "def pick_players(df, cluster_id, n=3):\n",
+        "    cluster_df = (\n",
+        "        df[df[\"cluster\"] == cluster_id]\n",
+        "        .sort_values([\"year\", \"scoring\"])\n",
+        "        [[\"name\", \"year\", \"scoring\", \"sg_ttg\", \"sg_p\", \"top_10\", \"win\"]]\n",
+        "        .drop_duplicates(subset=[\"name\"])  \n",
+        "    )\n",
+        "    return cluster_df.head(n)\n",
+        "\n",
+        "for c in range(4):\n",
+        "    print(f\"\\n=== Cluster {c} ===\")\n",
+        "    display(pick_players(pga_clusters, c, n=3))\n"
+      ],
+      "id": "9d36ca2f",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "base",
+      "language": "python",
+      "display_name": "Python (base)",
+      "path": "/Users/Daniel/Library/Jupyter/kernels/base"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
