@@ -16,19 +16,19 @@ editor: visual
 
 ## 1.1 Motivation
 
-Over past years, professional golf has gradually transformed into a **data-driven sport**. Launch monitors, body movement sensors, and 3D swing analysis apps have completely change how instructors interact with players. Decisions driven by feel, vison, and memory have been outdated from modern professional golf.
+Over past years, professional golf has gradually transformed into a data-driven sport. Launch monitors, body movement sensors, and 3D swing analysis apps have completely change how instructors interact with players. Decisions driven by feel, vision, and memory have been outdated from modern professional golf.
 
-One of the most important developments in this transition is the **strokes gained (SG)** metrics, which measure how many strokes a player gains or loses on each shot relative to the PGA Tour Standard. Mark Broadie’s work formally introduced this framework and showed that differences in the **long game** (driving and approach play) explain most of the variation in scoring among PGA Tour players, with putting playing a smaller—though still meaningful—role.
+One of the most important developments in this transition is the strokes gained (SG) metrics, which measure how many strokes a player gains or loses on each shot relative to the PGA Tour Standard. Mark Broadie’s work formally introduced this framework and showed that differences in the long game (driving and approach play) explain most of the variation in scoring among PGA Tour players, with putting playing a smaller but still meaningful role.
 
-At the same time, official reports from the USGA and R&A document a steady **increase in driving distance** on professional tours since the early 2000s, raising questions about how distance, strategy, and course set-up interact in the modern game.
+At the same time, official reports from the USGA and R&A document a steady increase in driving distance on professional tours since the early 2000s, raising questions about how distance, strategy, and course set-up interact in the modern game.
 
-This project builds on that context by using **publicly available PGA Tour summary datasets (2007–2022)** to ask:
+This project builds on that context by using publicly available PGA Tour summary datasets (2007–2022) to ask:
 
--   How have key performance metrics such as **driving distance** and **strokes gained** evolved over time?
--   Which metrics are most strongly associated with **lower scoring**?
--   What separates **winners** from the rest of the field in the modern PGA Tour environment?
+-   How have key performance metrics such as driving distance and strokes gained evolved over time?
+-   Which metrics are most strongly associated with lower scoring?
+-   What separates winners from the rest of the field in the modern PGA Tour environment?
 
-By combining data cleaning, exploratory analysis, unsupervised learning (player clustering), and supervised models (scoring and win prediction), the project aims to connect **high-level trends** in the sport with **practical performance insights** for coaches, analysts, and competitive players.
+By combining data cleaning, exploratory analysis, unsupervised learning (player clustering), and supervised models (scoring and win prediction), the project aims to connect high-level trends in the sport with practical performance insights for coaches, analysts, and competitive players.
 
 ## 1.2 Research Questions
 
@@ -37,15 +37,15 @@ This analysis is organized around six core questions:
 1.  **How have key PGA Tour metrics evolved from 2007–2022?**
     -   Trends in scoring average, driving distance, GIR%, and strokes gained metrics.
 2.  **Are there identifiable “types” of PGA Tour players?**
-    -   Use **unsupervised learning (k-means + PCA)** to uncover clusters such as *elite ball-strikers*, *putting specialists*, and *tour-average grinders*.
+    -   Use unsupervised learning (k-means + PCA) to uncover clusters such as *elite ball-strikers*, *putting specialists*, and *tour-average grinders*.
 3.  **Which performance metrics best predict scoring average?**
-    -   Compare the predictive power of **SG Tee-to-Green**, **SG Putting**, **GIR%**, and **driving distance** using regression models.
+    -   Compare the predictive power of SG Tee-to-Green, SG Putting, GIR%, and driving distance using regression models.
 4.  **What distinguishes winning players from the rest of the field?**
     -   Model the probability of earning at least one win in a season from SG metrics, GIR%, and distance.
 5.  **Is modern success driven more by strokes gained tee-to-green or putting?**
-    -   Evaluate effect sizes and feature importance from both **scoring** and **win** models, and compare them with prior work that emphasizes the long game.
+    -   Evaluate effect sizes and feature importance from both scoring and win models, and compare them with prior work that emphasizes the long game.
 6.  **Does added distance directly translate into better scores or more wins when compared to strokes gained metrics?**
-    -   Contrast the role of **raw distance** with more context-aware measures like **SG Tee-to-Green**, which capture not just how far a player hits it, but **how efficiently those shots lower score**.
+    -   Contrast the role of raw distance with more context-aware measures like SG Tee-to-Green, which capture not just how far a player hits it, but how efficiently those shots lower score.
 
 The rest of the site is structured to walk through this pipeline:
 

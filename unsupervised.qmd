@@ -14,7 +14,7 @@ editor: visual
 
 The goal of this section is to use **unsupervised learning** to discover natural player “types” on the PGA Tour, based purely on performance statistics rather than predefined labels. Instead of asking “who won?” or “who scored lowest?” we ask:
 
-> **Are there identifiable types of PGA Tour players using unsupervised learning?**
+> Are there identifiable types of PGA Tour players using unsupervised learning?
 
 To answer this, I apply K-Means clustering to season-level player performance and then interpret the resulting clusters using both summary statistics and example players from each group.
 

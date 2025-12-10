@@ -64,7 +64,7 @@ yearly_scores.reset_index().rename(columns={"scoring": "avg_scoring"})
 
 ### Scoring Average Variance
 
-Beyond changes in mean scoring, it is important to evaluate whether the **distribution** of scoring averages has also shifted. Using a boxplot by year, the analysis examines year-to-year variance, outliers, and the spread between top-performing and lower-performing players.
+Beyond changes in mean scoring, it is important to evaluate whether the distribution of scoring averages has also shifted. Using a boxplot by year, the analysis examines year-to-year variance, outliers, and the spread between top-performing and lower-performing players.
 
 The visual and numerical outputs show that the scoring distribution has tightened in recent years. Standard deviations have gradually decreased, and the range between the highest and lowest scoring averages has narrowed. A tightening distribution suggests an increasingly competitive environment—players must perform at exceptionally consistent levels to retain status or contend.
 
@@ -160,7 +160,7 @@ plt.show()
 
 Although putting receives enormous attention from media and fans, the strokes-gained literature shows that putting explains far less scoring variance than tee-to-green play. Nonetheless, SG_P remains an important component of performance, particularly for differentiating elite contenders within tournaments.
 
-While putting receives tons of media and fan attention, the strokes-gained literature shows that putting explains considerably less scoring variance compared to tee-to-green play. Still, SG_P continues to be a critical measure of performance, especially for separating elite contenders in tournaments. The trend plot of SG_P shows comparatively low movement vis-a-vis driving distance or SG_TTG.
+While putting receives tons of media and fan attention, the strokes-gained literature shows that putting explains considerably less scoring variance compared to tee-to-green play. Still, SG_P continues to be a critical measure of performance, especially for separating elite contenders in tournaments. The trend plot of SG_P shows comparatively low movement versus driving distance or SG_TTG.
 
 The trend plot for SG_P shows relatively minimal movement compared to driving distance or SG_TTG. This suggests:
 

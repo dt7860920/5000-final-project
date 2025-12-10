@@ -347,9 +347,9 @@ Finally, I extract feature importance from the random forest classifier and visu
 
 The ranking tends to be:
 
--   **SG_TTG** – still the top predictor
+-   SG_TTG – still the top predictor
 
--   **GIR%**, **Driving Distance**, and **SG_P** contribute at a similar level
+-   GIR%, Driving Distance, and SG_P contribute at a similar level
 
 **Interpretation:**
 
@@ -359,9 +359,9 @@ The ranking tends to be:
 
 Overall, the supervised learning section shows:
 
--   **Scoring average** is highly explainable and strongly driven by tee-to-green performance.
+-   Scoring average is highly explainable and strongly driven by tee-to-green performance.
 
--   **Winning** is much harder to predict, but still leans heavily on long-game quality, with meaningful contributions from putting and distance.
+-   Winning is much harder to predict, but still leans heavily on long-game quality, with meaningful contributions from putting and distance.
 
 ```{python}
 importances_clf = pd.Series(

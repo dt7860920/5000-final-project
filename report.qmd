@@ -286,7 +286,7 @@ This paper sought to assess performance variations of PGA Tour players through t
     K-means clustering unveiled four meaningful groups: balanced professionals, struggling players, elite ball-strikers, and elite putters. These clusters align with real observed playing styles on tour and demonstrate how players succeed using different combinations of strengths.
 
 3.  **Tee-to-green performance is the strongest predictor of scoring.**\
-    Both linear regression (R² ≈ 0.91) and random forest modeling confirmed that **SG_TTG is the dominant factor in predicting scoring average**.
+    Both linear regression (R² ≈ 0.91) and random forest modeling confirmed that SG_TTG is the dominant factor in predicting scoring average.
 
 4.  **Winning is difficult to predict, but certain patterns emerge.**\
     Predictive models for win probability showed lower performance due to class imbalance (only \~12% of players win in a given season). However:
@@ -295,7 +295,7 @@ This paper sought to assess performance variations of PGA Tour players through t
 
     -   Distance and SG_P also contributed meaningfully.
 
-        The result is clear: **consistent ball-striking is the foundation of winning**, but without putting and driving distance winning becomes extremely difficult.
+        The result is clear: consistent ball-striking is the foundation of winning, but without putting and driving distance winning becomes extremely difficult.
 
 5.  **Distance alone does not explain success**, despite the upward trend in average driving distance. Players are hitting farther than before, but distance without strong tee-to-green ability does not contribute to lower score or wins.
 
