@@ -1,5 +1,5 @@
 ---
-title: "report"
+title: "Final Report"
 format: 
   html:
     toc: true
@@ -12,11 +12,9 @@ editor: visual
 
 ### **1.1 Motivation**
 
-Professional golf has gone through a tremendous evolution over the past 20 years. Technical development in equipment, training method, and analytics have transformed the sport closer to a data driven decision making process, rather than feeling and muscle memory. Many may wonder: **What actually drives performance on the PGA Tour?**
+Professional golf has taken a drastic turn in the last twenty years. From the use of better equipment and new training approaches with powerful data analytics, changes in training algorithms have helped elevate the sport from intuition and muscle memory-based decision making to a data-based framework. Many may wonder: **What actually drives performance on the PGA Tour?**
 
-Most amateur golfers often focus on distance, consistency, and precision without an accurate measure. However, data from PGA Tour suggest some more complex metrics. The stroke gain (SG) is **a golf statistic that shows how many strokes you gained or lost on any given shot compared to an average player during your round of golf.**
-
-This project analyzes PGA Tour player performance from 2007 to 2022, by combining two publicly available professional datasets into an integrated dataframe. The goal is to use data analysis tools to answer key performance questions and unveil how modern professional golf has evolved.
+Amateur golfers tend to highlight physical distance, consistency and accuracy without an accurate measure. The PGA Tour numbers on the other hand feature more sophisticated metrics. **Strokes-gained (SG) is a statistic used to determine how many strokes a player gains or loses on any given shot compared to the field average.** The research examines PGA Tour player performance between 2007 and 2022 through an integration of two publicly available professional databases. In particular, this study focuses specifically on applying data analysis methods in order to uncover the key performance questions and reveal the transformation of modern professional golf.
 
 ### **1.2 Research Questions**
 
@@ -26,8 +24,8 @@ Clearly list the key questions your analysis answers, such as:
 > 2.  Are there identifiable types of PGA Tour players using unsupervised learning?
 > 3.  Which performance metrics best predict scoring average on the PGA Tour?
 > 4.  What distinguishes winning players from the rest of the field?
-> 5.  Is modern success driven more by strokes gained tee-to-green or putting
-> 6.  Does distance directly contributes to better score or titles won when compared to stroke gain metrics?
+> 5.  Is modern success driven more by strokes-gained tee-to-green or putting?
+> 6.  Does distance directly contribute to better score or titles won when compared to strokes-gain metrics?
 
 ------------------------------------------------------------------------
 
@@ -35,7 +33,9 @@ Clearly list the key questions your analysis answers, such as:
 
 ### **2.1 Dataset Description**
 
-The dataset used for this project merges two separate PGA Tour season-level datasets spanning **2007–2022**. After cleaning and standardization, the unified dataframe contains:
+The dataset used for this project merges two separate PGA Tour season-level datasets from **2007–2022**.
+
+After cleaning and standardization, the unified dataframe contains:
 
 > -   **Player name**
 >
@@ -47,7 +47,7 @@ The dataset used for this project merges two separate PGA Tour season-level data
 >
 > -   **Scoring average (Strokes)**
 >
-> -   **Strokes gained metrics: (Strokes)**
+> -   **Strokes-gained metrics: (Strokes)**
 >
 >     -   SG_P (putting)
 >
@@ -81,33 +81,33 @@ Research question:
 
 > How have key PGA Tour performance metrics evolved from 2007-2022?
 
-To better answer the question, this section will explore the distribution and trends of several key metrics, including scoring average, driving distance, and stroke gain metrics. Each subsections below focuses on a specific metric and analyzes how its distribution changes over time through data visualization methods.
+To better answer the question, this section will explore the distribution and trends of several key metrics, including scoring average, driving distance, and strokes-gain metrics. Each subsection below focuses on a specific metric and analyzes how its distribution changes over time through data visualization methods.
 
 ### **3.1 Trend in Scoring Average Over Time**
 
-Scoring average shows a gradual decline in the 15-year period, from 70.94-70.64. This suggest:
+Scoring average shows a gradual decline in the 15-year period, from 70.94 to 70.64. This suggests:
 
 -   Improvements in player fitness
 
 -   Equipment advancement
 
--   Stronger analytically and systematic training method
+-   Stronger analytical and systematic training method
 
-Even small improvements in PGA scoring average are significant in the given competitiveness of the PGA Tour.
+Even small improvements in PGA scoring average are significant in the given competitiveness of PGA Tour.
 
 ### **3.2 Driving Distance Over Time**
 
-Driving distance shows a clear upward trend, reflecting the "distance boom" widely discussed in professional golf. Nowadays, player focus more on weight/functional training, faster swing speed, and optimal launch angle and all these factor contributes to the long drives today.
+Driving distances are trended upwards (indicating something known as the “distance boom” in golf). Contemporary players increasingly emphasize weight and functional training, accelerate swing speeds and use their optimal launch angles as a result for longer drives.
 
-However, distance itself is only a small section of the golf game, and there is no guarantee that longer distance leads to more wins. Therefore, it leads to another question:
+*This aligns with the USGA & R&A (2022) Distance Insights Report and indicates that average driving distance as well as club head speed have gone up every single year on all professional tours, highlighting that the modern game places unprecedented emphasis on power and athleticism.* However, distance itself is only a small section of the golf game, and there is no guarantee that longer distance leads to more wins. Therefore, it leads to another question:
 
-> Does distance directly contributes to better score or titles won when compared to stroke gain metrics?
+> Does distance directly contribute to better score or titles won when compared to strokes-gain metrics?
 
-This question will be address later in the predictive model section.
+This question will be addressed later in the predictive model section.
 
 ### **3.3 Relationship Between SG Metrics and Scoring**
 
-Correlations between scoring and strokes gained show:
+Correlations between scoring and strokes-gained show:
 
 -   **SG_TTG is the strongest predictor of low scoring**
 
@@ -115,13 +115,13 @@ Correlations between scoring and strokes gained show:
 
 -   **SG_P contributes meaningfully but not as dominantly as SG_TTG**
 
-    This supports findings from Broadie (2011), who showed that the long game (approach + driving) explains most of the variation in scoring among PGA players.
+    *This supports findings from Broadie (2011), who showed that the long game (approach + driving) explains most of the variation in scoring among PGA players.*
 
 ### **4. Unsupervised Learning — Player Segmentation**
 
 ### **4.1 Purpose**
 
--   The distribution of scoring averages narrows over time, indicating a more competitive field. Usually in a more competitive industry, player will create their own unique route to success, forming different types of player with specific characteristics. In this section, unsupervised learning was used to identify player groups based on performance metrics. After standardization, K mean = 4 was able to provide valid and significant clusters.
+-   The distribution of scoring averages narrows over time, indicating a more competitive field. Usually in a more competitive industry, players will create their own unique route to success, making various types of players, with their own set of characteristics. Unsupervised learning is utilized to find player groups by performance criteria in this section. K-mean = 4 gave valid and consistent clusters after standardization.
 
 -   Research Question:
 
@@ -169,11 +169,11 @@ Correlations between scoring and strokes gained show:
 
 -   Relies heavily on short-game performance
 
--   Represents the great putters on tour, such as Arron Oborholser, Padraig Harrington, Tim Clark
+-   Represents the great putters on tour, such as Arron Oberholser, Padraig Harrington, Tim Clark
 
 ### **4.2 Key Insight**
 
-These clusters showcase the competitiveness of PGA tour, and suggesting there is no single path to success. While SG_TTG seems to be the biggest driver of elite performance, players can still compensate through specialization in driving distance, putting or other areas. By understanding the player profiles, we are able to better guide professional golfers with self evaluation, training priorities and performance forecasting.
+These clusters reflect the competitive nature of the PGA Tour and imply that there is no universal path for success. It seems that SG_TTG is the leading driver of elite golf performance; however, players can still compensate through specialization in driving distance, putting or other areas. By understanding the player profiles, we know how to better guide professional golfers with self-evaluation, training priorities, and performance forecasting.
 
 ------------------------------------------------------------------------
 
@@ -185,8 +185,8 @@ Research questions:
 
 > 1.  Which performance metrics best predict scoring average on the PGA Tour?
 > 2.  What distinguishes winning players from the rest of the field?
-> 3.  Is modern success driven more by strokes gained tee-to-green or putting
-> 4.  Does distance directly contributes to better score or titles won when compared to stroke gain metrics?
+> 3.  Is modern success driven more by strokes-gained tee-to-green or putting?
+> 4.  Does distance directly contribute to better score or titles won when compared to strokes-gain metrics?
 
 ### **5.2 Scoring Average Prediction (Regression)**
 
@@ -196,13 +196,11 @@ To model scoring average, four key performance features were selected:
 
 -   **Greens in Regulation % (GIR%)**
 
--   **Strokes Gained Putting (SG_P)**
+-   **Strokes-Gained Putting (SG_P)**
 
--   **Strokes Gained Tee-to-Green (SG_TTG)**
+-   **Strokes-Gained Tee-to-Green (SG_TTG)**
 
-These metrics corresponds to the three major categories of golf performance: distance, accuracy/ball striking, and putting.
-
-The dataset was split into training and testing sets (80/20), and models were evaluated using **RMSE** and **R²**.
+The dataset was divided into two training and test set (80/20) using RMSE and R² for model evaluation.
 
 ### **Model Performance**
 
@@ -213,9 +211,7 @@ The dataset was split into training and testing sets (80/20), and models were ev
 
 ### **Interpretation**
 
-The linear regression model’s strong performance indicates that **scoring average is highly predictable using only four metrics**. An R² of **0.91** means the model explains **91% of the variation** in scoring averages across 2,700+ player-seasons.
-
-Random Forest, despite being more flexible, performed slightly worse, suggesting that **the scoring determinants behave in a mostly linear fashion**, consistent with sports analytics literature.
+The strong performance of the linear regression model demonstrates that scoring average is very predictable by only four metrics. With an R² of 0.91 the model is able to account for 91% of score average variance during 2,700+ player-seasons. Despite Random Forest being a stronger model, the performance was worse which means that the factors that affect scoring are mainly linear in nature.
 
 ### **Feature Importance**
 
@@ -228,17 +224,19 @@ The Random Forest model provides a clear ranking:
 
 **Key Takeaways**
 
-> **Tee-to-green stroke gain performance is the major factor of low scoring average on PGA Tour**
+> **Tee-to-green strokes-gained performance is the major factor of low scoring average on PGA Tour**
 >
-> **Strokes gained tee-to-green is a much stronger factor in modern PGA Tour success comparing to stroke gain putting**
+> **Strokes-gained tee-to-green is a much stronger factor in modern PGA Tour success comparing to strokes-gained putting**
 >
 > **Driving distance does not have a strong correlation with low scoring average on PGA Tour**
 
-This aligns with Broadie (2011), who demonstrated that differences in long-game performance explain most scoring separation among professionals.
+*This aligns with Broadie (2011), who demonstrated that differences in long-game performance explain most scoring separation among professionals.*
+
+*Broadie (2014) further expanded on this by quantifying that tee-to-green performance accounts for the largest share of scoring advantages among elite players, supporting the model’s emphasis on SG_TTG as the most influential predictor.*
 
 ### **5.3 Predicting Season Wins (Classification)**
 
-To model **whether a player wins at least one event**, the same four metrics were used.
+To model whether a player wins at least one event, the same four metrics were used.
 
 A binary variable was created to classify the groups:
 
@@ -250,10 +248,10 @@ A binary variable was created to classify the groups:
 
 | Model                    | Accuracy | ROC-AUC |
 |--------------------------|----------|---------|
-| Logical Regression       | 0.882    | 0.768   |
+| Logistic Regression      | 0.882    | 0.768   |
 | Random Forest Classifier | 0.880    | 0.710   |
 
-Interpretation
+### **Interpretation**
 
 Although both models have high accuracy, the models struggle to correctly identify winners:
 
@@ -261,7 +259,7 @@ Although both models have high accuracy, the models struggle to correctly identi
 
 -   Random Forest recall for winners = 0.10
 
-This suggests that winning on PGA Tour is extremely difficult and fluctuating, because there are far more unconsidered factors beyond selected variables, such as course style, weather condition, and even luck.
+This suggests that winning on PGA Tour is extremely difficult and unpredictable, because there are far more unconsidered factors beyond selected variables, such as course style, weather condition, and even luck.
 
 Feature Importance for Wins
 
@@ -272,66 +270,83 @@ Feature Importance for Wins
 
 **Key Takeaway**
 
-> **Winning requires a complete golf game, its very unlikely that player only reply on one part of the game to win.**
+> **Winning requires a complete golf game, it's very unlikely that player only reply on one part of the game to win.**
 
 # **6. Conclusions**
 
 ### **6.1 Key Takeaways**
 
-This project set out to understand how PGA Tour player performance has evolved over time and which performance metrics most strongly distinguish elite players from the rest of the field. Using a combined dataset spanning 2007–2022, the analysis incorporated exploratory data visualization, unsupervised clustering, and supervised predictive modeling to uncover systematic trends in modern professional golf.
+This paper sought to assess performance variations of PGA Tour players through time and to identify the performance metrics that differentiate elite players most from the general players. By utilising a combined dataset from 2007-2022, the analysis applied exploratory form in terms of visualizing data, unsupervised clustering and supervised predictive modeling to unveil trends that systematically evolve in modern professional golf.
 
 **Key Findings**
 
-1.  **Scoring averages have gradually declined over the past 15 years**, supported by simultaneous rises in driving distance and improvements in strokes gained metrics. This reflects advancements in athletic training, analytics-driven coaching, and equipment technology. Even small reductions in scoring average indicate increased competitiveness on the PGA Tour.
+1.  **Scoring averages have gradually declined over the past 15 years**, while improvements in driving distance and strokes-gained metrics are significantly positive. This reflects advancements in physical training, data driven coaching, and equipment technology.
 
 2.  **Player archetypes have become more distinct.**\
-    K-means clustering revealed four meaningful groups—balanced professionals, struggling players, elite ball-strikers, and elite putters. These clusters align with real observed playing styles on tour and demonstrate how players succeed using different combinations of strengths. The presence of Tiger Woods, Ernie Els, and Justin Rose in the “Elite Ball-Striker” cluster further validates the segmentation.
+    K-means clustering unveiled four meaningful groups: balanced professionals, struggling players, elite ball-strikers, and elite putters. These clusters align with real observed playing styles on tour and demonstrate how players succeed using different combinations of strengths.
 
 3.  **Tee-to-green performance is the strongest predictor of scoring.**\
-    Both linear regression (R² ≈ 0.91) and random forest modeling confirmed that **SG_TTG is the dominant factor in explaining scoring average**, far exceeding putting, distance, or GIR%. This supports existing literature (e.g., Broadie, 2011) emphasizing the importance of the long game in professional golf.
+    Both linear regression (R² ≈ 0.91) and random forest modeling confirmed that **SG_TTG is the dominant factor in predicting scoring average**.
 
 4.  **Winning is difficult to predict, but certain patterns emerge.**\
     Predictive models for win probability showed lower performance due to class imbalance (only \~12% of players win in a given season). However:
 
-    -   SG_TTG again emerged as the strongest predictor of winning.
+    -   SG_TTG remain as the strongest predictor of winning.
 
-    -   Distance and SG_P contributed meaningfully but were secondary.
+    -   Distance and SG_P also contributed meaningfully.
 
-        The insight is clear: **consistent ball-striking is the foundation of winning**, while putting helps differentiate players *within* tournaments.
+        The result is clear: **consistent ball-striking is the foundation of winning**, but without putting and driving distance winning becomes extremely difficult.
 
-5.  **Distance alone does not explain success**, despite its upward trend.
-    Players are hitting farther than ever, but distance without strong tee-to-green proficiency does not reliably predict low scoring or wins. This reinforces that modern distance gains matter most when paired with elite approach and accuracy skills.
-
-------------------------------------------------------------------------
-
-**Overall Conclusion**
-
-Modern PGA Tour success is built primarily on **tee-to-green excellence**, supported by increased athleticism and technology. While putting and driving distance certainly contribute, the underlying determinant of elite performance remains the ability to consistently gain strokes through approach play and long-game precision. The narrowing distribution of scoring averages and the emergence of clear performance archetypes reflect a professional landscape that is deeper, more competitive, and more analytically optimized than ever before.
-
-This project demonstrates how statistical modeling and machine learning can reveal meaningful structure in sports performance data, and it highlights clear opportunities for future research—such as incorporating shot-level data, modeling year-to-year player progression, or quantifying the influence of course difficulty and weather conditions.
+5.  **Distance alone does not explain success**, despite the upward trend in average driving distance. Players are hitting farther than before, but distance without strong tee-to-green ability does not contribute to lower score or wins.
 
 ### **6.2 Limitations**
 
-**Class Imbalance**
+1.  **Class Imbalance in win prediction**
 
-Only **337 out of 2,747** player-seasons included a win.\
+    Only 337 out of 2,747 player-seasons included a win. This imbalance makes accurate prediction challenging because winning is a rare event even for elite players.
 
-This imbalance makes accurate prediction challenging because winning is a rare event even for elite players.
+2.  **Missing years in dataset (2023-2025)**
 
-Short, non-technical:
+    The analysis does not include the most recent PGA seasons, which limits the insights into current trends on Tour.
 
--   
+3.  **Variability in data quality across sources**
 
--   Missing years (2023–2025)
+    The two datasets (2007-2017 and 2017-2022) were collected using different scraping pipelines.
 
--   
+# 6.3 LLM Usage
 
--   No shot-level granularity
+### **Text-Related Use Cases**
 
--   
+**Reformatting and summarizing text**
 
--   Some players have sparse year-to-year data
+-   Converting long explanations into clear bullet points for the landing page
 
--   
+-   Summarizing my technical descriptions into concise paragraphs
 
--   Combined dataset required manual alignment
+-   Improving readability of the motivation, findings, and narrative sections
+
+-   Improving grammar, flow, and organization of report sections
+
+-   Ensuring technical descriptions were understandable to a non-technical audience
+
+### **Code-Related Use Cases**
+
+**Code explanation**
+
+-   Asking for explanations of what my own code blocks were doing (e.g., PCA, clustering, Random Forest feature importance)
+
+-   Understanding how plotting functions work so that I could write the code myself
+
+-   Adding or rewriting comments to clarify the purpose of different steps
+
+-   Formatting code to improve structure and organization
+
+### **Conceptual & Brainstorming Use Cases**
+
+**Project brainstorming and structure planning**
+
+-   Refining research questions
+
+-   Designing the layout for each website page
+
+-   Thinking through how to connect scouting analytics, clustering insights, and regression results

@@ -12,8 +12,14 @@ execute:
 editor: visual
 ---
 
-### Unsupervised Learning
+The goal of this section is to use **unsupervised learning** to discover natural player “types” on the PGA Tour, based purely on performance statistics rather than predefined labels. Instead of asking “who won?” or “who scored lowest?” we ask:
+
+> **Are there identifiable types of PGA Tour players using unsupervised learning?**
+
+To answer this, I apply K-Means clustering to season-level player performance and then interpret the resulting clusters using both summary statistics and example players from each group.
+
 ### Data Import
+
 ```{python}
 import pandas as pd
 import numpy as np
@@ -26,7 +32,31 @@ import matplotlib.pyplot as plt
 pga = pd.read_csv("data/processed-data/pga_cleaned.csv")
 pga.head()
 ```
+
 ### Filter Features
+
+Clustering performance profiles requires choosing a set of features that capture how players **actually play golf**, not just whether they happen to win in a given season. For this reason, I include the following variables:
+
+-   **scoring** – scoring average (strokes per round)
+
+-   **drive_distance** – average driving distance
+
+-   **gir_pct** – greens in regulation percentage
+
+-   **sg_p** – strokes gained putting
+
+-   **sg_ttg** – strokes gained tee-to-green
+
+-   **sg_t** – strokes gained total
+
+-   **top_10** – number of top-10 finishes in the season
+
+-   **win** – number of wins in the season
+
+Together, these variables summarize scoring outcome, long-game and short-game performance, and high-end results (top-10s and wins).
+
+Before fitting the model, I drop any rows with missing values in these columns to ensure the clustering algorithm has complete data for each player-season.
+
 ```{python}
 features = [
     "scoring",
@@ -42,12 +72,38 @@ features = [
 X = pga[features].dropna()
 X.head()
 ```
+
 ### Scale
+
+Because these features are on different scales (for example, scoring is around 70, sg_ttg tends to be between roughly −3 and +3, and top_10 is a small integer), I standardize all selected features using StandardScaler.
+
+Standardization transforms each variable to have:
+
+-   Mean ≈ 0
+
+    Standard deviation ≈ 1
+
+This is especially important for K-Means, which uses Euclidean distance in feature space. Without scaling, variables with larger numerical ranges (like scoring or driving distance) would dominate the distance computation and overshadow more subtle but important statistics like strokes gained.
+
 ```{python}
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 ```
+
 ### Calculate optimal K mean
+
+To determine a reasonable number of clusters, I use the Elbow Method.
+
+For k from 2 to 9, I:
+
+1.  Fit a K-Means model with `n_clusters = k` on the scaled data
+
+2.  Record the **inertia** (within-cluster sum of squared distances)
+
+Plotting inertia against k typically shows a rapidly decreasing curve that then begins to “bend” or “flatten” — the “elbow.” That elbow represents a good trade-off between model complexity (more clusters) and compactness (lower within-cluster variance).
+
+In this case, the elbow occurs around k = 4, suggesting that four distinct performance archetypes are present in the data. This choice balances interpretability and segmentation detail.
+
 ```{python}
 inertia = []
 K_range = range(2, 10)
@@ -68,6 +124,25 @@ plt.show()
 ```
 
 ### Set K mean as 4
+
+After selecting **k = 4**, I fit a K-Means model with:
+
+-   `n_clusters = 4`
+
+-   `random_state = 42`
+
+-   `n_init = 10`
+
+The model assigns each player-season to one of four clusters, stored in a new column `cluster`. I then create a `pga_clusters` dataframe, which contains all original variables for the filtered rows along with the cluster label.
+
+This allows me to:
+
+-   Summarize each cluster by averaging statistics
+
+-   Look up specific players in each cluster
+
+-   Cross-reference cluster labels with scoring, wins, and strokes-gained metrics
+
 ```{python}
 kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
 clusters = kmeans.fit_predict(X_scaled)
@@ -77,6 +152,21 @@ pga_clusters["cluster"] = clusters
 ```
 
 ### PCA graph
+
+To understand how the clusters are arranged in high-dimensional space, I apply Principal Component Analysis (PCA) to reduce the standardized feature space to two components (PC1 and PC2).
+
+PCA serves two purposes here:
+
+1.  It compresses information from 8 features into 2 dimensions for visualization.
+
+2.  It preserves as much variance as possible, so the clusters remain meaningfully separated in the 2D plot.
+
+Each player-season is projected onto the (PC1, PC2) plane, and the points are colored by cluster label. The resulting scatterplot:
+
+-   Shows clearly separated groupings, confirming that the K-Means clustering captures real structure in the data.
+
+-   Provides a visual intuition for how different performance profiles occupy different regions of the feature space (e.g., elite ball-strikers vs. struggling players).
+
 ```{python}
 from sklearn.decomposition import PCA
 
@@ -98,12 +188,72 @@ plt.show()
 ```
 
 ### Cluster Profile
+
+**Cluster 0 - Balanced Professionals**
+
+-   Average SG metrics
+
+-   Solid but not outstanding in any single category
+
+-   Mid-level scoring average
+
+**Cluster 1 - Struggling Players**
+
+-   Negative SG_TTG and SG_T
+
+-   Higher scoring average
+
+-   Few top-10 finishes
+
+**Cluster 2 - Elite Ball Strikers**
+
+-   Highest SG_TTG
+
+-   Lowest scoring average
+
+-   Best combination of GIR%, distance, and SG_TTG
+
+-   Most number of wins and top-10s
+
+**Cluster 3 - Elite Putters**
+
+-   Highest SG_P
+
+-   Moderate SG_TTG
+
+-   Relies heavily on short-game performance
+
 ```{python}
 cluster_profile = pga_clusters.groupby("cluster")[features].mean().round(2)
 cluster_profile
 ```
 
 ### Cluster player names
+
+To make the clusters more concrete and interpretable, I display a few representative players for each cluster.
+
+For each cluster:
+
+1.  Filter by cluster label
+
+2.  Sort by year and scoring
+
+3.  Drop duplicate names so each player appears once
+
+4.  Show a small number of players with their scoring, SG_TTG, SG_P, top-10s, and wins
+
+This yields intuitive examples such as:
+
+-   **Cluster 0 (Balanced Professionals):** players like Anthony Kim, Jeff Overton, Kenny Perry
+
+-   **Cluster 1 (Struggling Players):** players like Anders Hansen, Glen Day, Gavin Coles
+
+-   **Cluster 2 (Elite Ball-Strikers):** players like Tiger Woods, Ernie Els, Justin Rose
+
+-   **Cluster 3 (Elite Putters):** players like Arron Oberholser, Padraig Harrington, Tim Clark
+
+By combining cluster averages and named examples, the analysis shows that unsupervised learning successfully recovers meaningful player archetypes that correspond to real-world styles and reputations on the PGA Tour.
+
 ```{python}
 pga_clusters = pga.loc[X.index].copy()
 pga_clusters["cluster"] = clusters
@@ -124,6 +274,7 @@ show_players(pga_clusters, 3, sort_col="sg_p", n=20)
 ```
 
 ### Display distinct three names for each clusters as an example
+
 ```{python}
 from IPython.display import display
 
@@ -141,4 +292,3 @@ for c in range(4):
     display(pick_players(pga_clusters, c, n=3))
     
 ```
-

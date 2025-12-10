@@ -6,3 +6,6 @@
 # Quarto output
 _site/
 data/raw-data/
+
+/.quarto/
+**/*.quarto_ipynb

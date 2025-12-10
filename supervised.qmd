@@ -8,7 +8,17 @@ format:
 editor: visual
 ---
 
-### Supervised Learning
+In this section, I use supervised learning to answer four main research questions:
+
+> -   Which performance metrics best predict scoring average on the PGA Tour?
+>
+> -   What distinguishes winning players from the rest of the field?
+>
+> -   Is modern success driven more by strokes-gained tee-to-green or putting?
+>
+> -   Does distance directly contribute to better score or titles won when compared to strokes-gain metrics?
+
+I fit both regression models (for scoring average) and classification models (for whether a player wins at least one event in a season) and compare their performance and feature importance.
 
 ### Setup
 
@@ -43,6 +53,26 @@ pga.columns
 
 ### Regression (Predict Score)
 
+The first supervised task is predicting scoring average using only a few core performance metrics:
+
+-   **Driving Distance**
+
+-   **Greens in Regulation % (GIR%)**
+
+-   **Strokes-Gained Putting (SG_P)**
+
+-   **Strokes-Gained Tee-to-Green (SG_TTG)**
+
+These four features represent the main components of performance: distance, approach/accuracy, putting, and long-game quality.
+
+Variables defined:
+
+-   `X_reg` = the matrix of these four predictors
+
+-   `y_reg` = the target variable `scoring`
+
+Rows with missing values were dropped to ensure the regression model has complete data for all inputs.
+
 ```{python}
 reg_features = [
   "drive_distance",
@@ -61,6 +91,14 @@ X_reg.shape, y_reg.shape
 
 ### Training and testing split (Predict Score)
 
+To properly evaluate the regression model, I split the data into:
+
+-   **80% training data** – used to fit the model
+
+-   **20% testing data** – held out for evaluation
+
+I also standardize the predictors (mean 0, variance 1) using StandardScaler. This is especially important for Linear Regression, which can be sensitive to feature scales, and makes coefficients more interpretable in standardized units.
+
 ```{python}
 X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(
 X_reg, y_reg, test_size=0.2, random_state=42
@@ -72,6 +110,20 @@ X_test_reg_scaled = scaler_reg.transform(X_test_reg)
 ```
 
 ### Linear Regression (Predict Score)
+
+In this step, I fit a linear regression model on the scaled training data and evaluate it on the test data.
+
+-   **RMSE** (root mean squared error) measures the typical prediction error in strokes.
+
+-   **R²** measures how much of the variance in scoring average is explained by the four predictors.
+
+The results:
+
+-   RMSE ≈ 0.19
+
+-   R² ≈ 0.91
+
+This means the model explains about **91%** of the variation in scoring averages. That is extremely strong for sports performance data, suggesting that these four metrics capture most of what drives scoring differences between players.
 
 ```{python}
 lin_reg = LinearRegression()
@@ -88,6 +140,20 @@ print(" R^2 :", r2_lin)
 ```
 
 ### Random Forest (Predict Score)
+
+Unlike linear regression, a random forest can automatically capture nonlinearities and interactions between variables.
+
+The results:
+
+-   RMSE ≈ 0.21
+
+-   R² ≈ 0.90
+
+This shows that:
+
+-   The relationship between scoring and these features is mostly linear, since the simpler linear model actually performs slightly better.
+
+-   Random Forest is still useful for its feature importance output, which helps quantify which predictors matter most.
 
 ```{python}
 rf_reg = RandomForestRegressor(
@@ -108,7 +174,29 @@ print("  RMSE:", rmse_rf)
 print("  R^2 :", r2_rf)
 ```
 
-### Feature importance (Predict Score)
+### Feature Importance (Predict Score)
+
+Here, I extract feature importance values from the random forest regression model and visualize them as a bar chart.
+
+The ranking:
+
+1.  **SG_TTG**
+
+2.  **SG_P**
+
+3.  **GIR%**
+
+4.  **Driving Distance**
+
+**Interpretation:**
+
+-   Strokes Gained Tee-to-Green dominates scoring prediction.
+
+-   Putting still matters, but contributes less than overall long-game quality.
+
+-   Distance is the least important of the four, once strokes gained metrics are included.
+
+This matches both the EDA and existing literature: scoring is primarily driven by tee-to-green performance, not just hitting it far.
 
 ```{python}
 importances_reg = pd.Series(
@@ -128,6 +216,24 @@ importances_reg
 ```
 
 ### Classification Model (Predict Win)
+
+Now I switch from predicting a continuous outcome (scoring) to a binary outcome: whether a player wins at least one event in a season.
+
+I create:
+
+-   `has_win = 1` if `win > 0`
+
+-   `has_win = 0` otherwise
+
+The same four features are used:
+
+-   **Driving Distance**
+
+-   **Greens in Regulation % (GIR%)**
+
+-   **Strokes-Gained Putting (SG_P)**
+
+-   **Strokes-Gained Tee-to-Green (SG_TTG)**
 
 ```{python}
 
@@ -149,6 +255,16 @@ X_clf.shape, y_clf.value_counts()
 
 ### Training and testing split (Predict Win)
 
+Similar to the regression case, I:
+
+-   Split into training (80%) and test (20%) sets
+
+-   Use `stratify=y_clf` so the class balance (winner vs non-winner) is preserved
+
+-   Standardize predictors for logistic regression
+
+This setup supports fair model evaluation, especially important because only a small percentage of seasons include a win, which makes the outcome imbalanced.
+
 ```{python}
 
 X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(
@@ -161,6 +277,18 @@ X_test_clf_scaled = scaler_clf.transform(X_test_clf)
 ```
 
 ### Logistic Regression (Predict Win)
+
+I then fit a Logistic Regression model on the scaled training data and evaluate it on the test set.
+
+Metrics:
+
+-   **Accuracy** – overall percent of correct predictions
+
+-   **ROC AUC** – how well the model ranks winners above non-winners
+
+-   **classification_report** – precision/recall/F1 for winners vs non-winners
+
+The accuracy is high (\~0.88), but recall for the winning class is low. This reflects reality: winning is rare and noisy, and many seasons with strong stats still result in no wins.
 
 ```{python}
 log_reg = LogisticRegression(max_iter=1000)
@@ -179,6 +307,18 @@ print(classification_report(y_test_clf, y_pred_log))
 ```
 
 ### Random Forest (Predict Win)
+
+I also train a Random Forest Classifier with 400 trees. Again, this model is less sensitive to scaling and can capture non-linear decision boundaries.
+
+Evaluation shows:
+
+-   Accuracy around 0.88
+
+-   ROC AUC around 0.71
+
+-   Improved but still modest recall for winners
+
+This confirms that winning is harder to predict than scoring. Tournament victories depend on many factors not captured in season aggregates (course fit, weather, clutch performance, luck, etc.).
 
 ```{python}
 rf_clf = RandomForestClassifier(
@@ -201,7 +341,27 @@ print("  ROC AUC :", auc_rf)
 print(classification_report(y_test_clf, y_pred_rf_clf))
 ```
 
-#Feature importance (Predict Win)
+### Feature Importance (Predict Win)
+
+Finally, I extract feature importance from the random forest classifier and visualize it.
+
+The ranking tends to be:
+
+-   **SG_TTG** – still the top predictor
+
+-   **GIR%**, **Driving Distance**, and **SG_P** contribute at a similar level
+
+**Interpretation:**
+
+-   Winning a tournament requires a complete game: long-game strength, solid GIR%, putting, and distance all matter.
+
+-   SG_TTG remains foundational, but putting and distance play a more visible role in differentiating players at the very top.
+
+Overall, the supervised learning section shows:
+
+-   **Scoring average** is highly explainable and strongly driven by tee-to-green performance.
+
+-   **Winning** is much harder to predict, but still leans heavily on long-game quality, with meaningful contributions from putting and distance.
 
 ```{python}
 importances_clf = pd.Series(

@@ -1,0 +1,67 @@
+---
+title: "Literature Review"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+editor: visual
+---
+
+In order to understand PGA Tour performance analytics and understand its applicability, it is necessary to go further than a thorough research and to appreciate how these findings are relevant to what I know about playing real golf. As a former NCAA Division I player at USC, someone who has competed in the best amateur circuits and immersed myself in golf data through my Golflytics platform, the academic findings highlighted in my literature review resonate especially with my own experiences on the course. Furthermore, these works from Broadie (2011, 2014) and USGA & R&A (2022) provide the blueprint for modern golf analytics as well as confirm several trends that I saw while playing competitive golf and analyzing professional performance data in my current analytic work.
+
+## **1. Broadie (2011): Strokes Gained and My Experience in Competitive Golf**
+
+Broadie’s 2011 review, *Assessing Golfer Performance Using Golfmetrics*, presented the strokes gained (SG) methodology, which revolutionized game performance measurement for both golfers and coaches. One of the central conclusions of the study is that **tee-to-green performance explains most of the scoring difference between players**, while putting typically contributes less to long-term scoring trends. This finding highly reflects my own experience as a competitive golfer. Throughout junior golf, college golf, and PGA Tour China events, I noticed that players who consistently hit more greens were almost always the ones producing low rounds. Even when my putting felt average, solid ball striking would keep my scores competitive and avoid big numbers.
+
+Broadie’s way of quantifying these trends aligns with the way players describe performance at an elite level. In practice rounds or tournament development, my team at USC spent much more time with approach play and tee shot strategy than with putting practices, because they produced the best return on scoring. SG_TTG made up 73% of predictive power in our supervised learning models, aligning perfectly with Broadie’s findings and my lived experience. This piece of literature validates what I felt as a golfer: good putting wins tournaments, but elite ball striking builds careers.
+
+------------------------------------------------------------------------
+
+## **2. Broadie (2014): What Separates Winners — Consistent With What I Saw From Elite Players**
+
+In Broadie’s 2014 analysis of PGA Tour performance, he found that:
+
+-   SG_TTG is the strongest differentiator between winners and non-winners.
+
+-   Better drivers of the ball gain compounding advantages throughout the season.
+
+-   Putting separates players situationally but does not define long-term success.
+
+During my career, I competed alongside players who later turned professional, and the differences Broadie described were clear. The strongest players I encountered, whether in college events or professional tournaments, separated themselves through:
+
+-   Consistent distance and accuracy off the tee
+
+-   Superior iron play
+
+-   Ability to control spin and trajectory in different conditions
+
+This aligns with my experience playing with or against several top amateurs and professionals who were not always the best putters but were incredibly dominant ball strikers.
+
+Broadie’s work also discusses how improvements in equipment, athleticism, and data analysis have transformed the modern game. As someone who grew up through the transition to modern drivers, speed training, and Trackman-based coaching, I have seen this evolution myself. College programs are leaning more on analytics - carry distance optimization, dispersion patterns, strokes-gained breakdowns - it was not at the level they were a decade ago. Broadie’s research establishes the academic rationale behind this change.
+
+------------------------------------------------------------------------
+
+## **3. USGA & R&A (2022): Distance Evolution and Its Connection to My Playing Career**
+
+The *2022 Distance Insights Report* from the USGA and R&A documents measurable increases in:
+
+-   Driving distance
+
+-   Clubhead speed
+
+-   Ball speed
+
+I personally experienced this transition during my career. As a junior golfer, a 300-yard drive was considered long. However, right now 300 yards have become the new standard for junior players, and higher level college players are consistently pushing their driving distance to 320+ yards with modern equipment, speed training, and biomechanical coaching.
+
+This report gives context for the trends I identified in my own dataset:
+
+-   Average tour driving distance increased by nearly 12 yards between 2007 and 2022.
+
+-   Players in my Cluster 2 (“Elite Ball-Strikers”) were also the longest hitters and highest in SG_TTG.
+
+-   Distance continues to correlate strongly with GIR% and scoring efficiency.
+
+This is consistent with the findings of my own practice rounds and tournaments: distance brings structural advantage that multiplies over a number of holes and rounds. More birdie opportunities, more par saves, lower variance in scoring: Shorter approach shots mean fewer errors.
+
+The report also addresses concerns about over-saturation of distance and the imbalance of competing. As I talked with my coach and other players, this seems right to be the case, especially regarding course setup adjustments needed to preserve difficulty as driving distances increase.

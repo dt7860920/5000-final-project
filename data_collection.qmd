@@ -13,43 +13,44 @@ execute:
 
 ## Overview
 
-This project analyzes **PGA Tour player performance from 2007–2022**.\
-Instead of scraping data from PGA live websites, I use two **publicly available raw CSV files** on GitHub to apply for my analysis.
+This research examines the performance of players in the PGA Tour, covering the years 2007–2022, exploring the evolution of scoring average, driving distance, greens in regulation, and strokes-gained. As direct API access or web scraping from PGA Tour websites is no longer possible across all years, this investigation uses two publicly accessible unprocessed CSV datasets on GitHub. The datasets offer season-level professional stats across a number of performance sectors and can be leveraged to assess the long-run trends and for developing predictive and descriptive models.
 
-These files are treated as **raw data** and stored in:
+Both raw datasets are stored in the project directory under:
 
 **data/ raw-data/ pgatour_raw.csv pga_full.csv**
 
 # Raw Data Sources:
 
-### pgatour_raw.csv — Original PGA Tour Scrape (2007–2017)
+### Dataset 1: pgatour_raw.csv — Original PGA Tour Scrape (2007–2017)
 
-A compiled PGA Tour statistics dataset from a public GitHub Repository.
+This dataset is based on the public GitHub repository developed by **Daron Prater (2017)** as part of a golf analytics project. It aggregates performance tracking statistics on PGA Tour for a decade and includes many of the traditional metrics used in early sports analytics research.
 
 **Source:** Prater, D. (2017). *PGA Tour Data Science Project* \[Dataset\]. GitHub.\
-https://github.com/daronprater/PGA-Tour-Data-Science-Project Example variables:
+https://github.com/daronprater/PGA-Tour-Data-Science-Project
 
--   NAME: Player name
+Example variables:
 
--   ROUNDS: Number of rounds played
+-   NAME: Player name as recorded in the tournament database
 
--   SCORING: Scoring average
+-   ROUNDS: Number of competitive rounds played in the season
 
--   DRIVE_DISTANCE: Driving distance (yards)
+-   SCORING: Season scoring average (lower values indicate better performance)
+
+-   DRIVE_DISTANCE: Average driving distance measured in yards
 
 -   FWY\_%: Fairway hit percentage
 
 -   GIR\_%: Greens in regulation percentage
 
--   SG_P, SG_TTG, SG_T: Strokes gained putting, tee-to-green, and total
+-   SG_P, SG_TTG, SG_T: Strokes-gained putting, tee-to-green, and total
 
--   TOP 10, 1ST: Top-10 finishes and wins
+-   TOP 10, 1ST: Number of top-10 finishes and wins
 
 -   Year: Season year
 
-### pga_full.csv — Extended PGA Tour Stats (2017–2022)
+### Dataset 2: pga_full.csv — Extended PGA Tour Stats (2017–2022)
 
-A compiled PGA Tour statistics dataset from a public GitHub Repository.
+This dataset is from **Charlie Ahmer (2021)**, also available publicly on GitHub. It offers revised statistics about the PGA Tour that are more accurate and up-to-date, particularly in its newly evolved strokes-gained metrics.
 
 **Source:** Ahmer, C. (2021). *PGA Tour Data Collection and Dashboard* \[Dataset\]. GitHub.\
 https://github.com/charlie-ahmer/PGATour-DataCollectionAndDashboard
@@ -69,6 +70,10 @@ Example variables:
 -   TOP 10, 1ST: Top-10 finishes and wins
 
 -   Year: Season year
+
+This dataset generally has cleaner formatting and more features due to improvements in PGA Tour's data infrastructure after 2015.
+
+**Loading and Inspecting the Raw Data**
 
 ```{python}
 import pandas as pd
@@ -92,8 +97,25 @@ pga_full.head()
 pga_full.columns
 ```
 
-### Limitations on data sources: 
-* Missing years in the dataset (from 2023-2025)
-* Unable to scrape data directly from PGA website
-* Player name inconsistencies across sources
-* Different data quality between early and late years
+## **Challenges in Data Integration**
+
+The two datasets had different structures and formats that needed to be standardized due to the scraping of data during different times and by different contributors. At the core of the problem was variable name misalignment: many of the fields represented the same statistic but used distinct naming conventions, such as SCORING versus ScoringAvg or DRIVE_DISTANCE versus DrivingDistance. For the smooth merging of the datasets, all column names were standardized into consistent lowercase snake_case formatting. 
+
+There were also many discrepancies in player names. Some players were missing middle initials or accent marks, and others have inconsistent formatting from year to year. These inconsistencies made direct merging on player names unreliable. To avoid incorrect joins causing bias, the merged dataset considers each player-season entry separately instead of trying to collapse several seasons for the same player. 
+
+Missing values and data variability across different years added to the complexity. The PGA Tour did not fully standardize strokes-gained stats until the early 2010s, which has left earlier seasons more incomplete. On the other hand, later seasons with better radar-based distance reporting and complete strokes-gained data lead to heterogeneity in feature reliability. 
+
+Furthermore, both datasets contain temporal coverage gaps. They include complete data only through 2022 and do not include recent seasons (2023–2025). They also omit data on majors, WGC events, and some playoff adjustments, so not all elite-level performance contexts are represented. While these omissions do not prevent long-term trend tracking, they restrict commentary on recent trends across professional golf or the ability to include event-specific results into predictive modeling. 
+
+------------------------------------------------------------------------
+
+## **Why These Data Are Still Suitable**
+
+Although these limitations exist, the combined dataset is a very good fit for examining PGA Tour performance trends and addressing the research questions of this research. First, the dataset delivers a well-rounded longitudinal viewpoint over a period of fifteen years, capturing several key developments in the sport, such as acceleration in driving distance, adoption of analytic training approaches in recent years, and the consolidation of the strokes-gained model. Over this long period, the data covers progression in player skills and competitive changes, enabling meaningful comparisons across eras of the modern PGA Tour. 
+
+### Limitations on data sources:
+
+-   Missing years in the dataset (from 2023-2025)
+-   Unable to scrape data directly from PGA website
+-   Player name inconsistencies across sources
+-   Different data quality between early and late years

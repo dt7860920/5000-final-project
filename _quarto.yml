@@ -7,6 +7,8 @@ website:
     left:
       - text: "Home"
         file: index.qmd
+      - text: "Literature Review"
+        file: literature.qmd
       - text: "Data Collection"
         file: data_collection.qmd
       - text: "Data Cleaning"

@@ -16,9 +16,9 @@ editor: visual
 
 ## 1.1 Motivation
 
-Over the last 15–20 years, professional golf has quietly become a **data-driven sport**. Launch monitors, performance tracking apps, and shot-level databases have transformed how coaches and players think about improvement. Decisions that used to rely on *feel* and memory are now increasingly guided by **numbers**.
+Over past years, professional golf has gradually transformed into a **data-driven sport**. Launch monitors, body movement sensors, and 3D swing analysis apps have completely change how instructors interact with players. Decisions driven by feel, vison, and memory have been outdated from modern professional golf.
 
-One of the most important developments in this shift is the family of **strokes gained (SG)** metrics, which measure how many strokes a player gains or loses on each shot relative to the PGA Tour field. Mark Broadie’s work formally introduced this framework and showed that differences in the **long game** (driving and approach play) explain most of the variation in scoring among PGA Tour players, with putting playing a smaller—though still meaningful—role.
+One of the most important developments in this transition is the **strokes gained (SG)** metrics, which measure how many strokes a player gains or loses on each shot relative to the PGA Tour Standard. Mark Broadie’s work formally introduced this framework and showed that differences in the **long game** (driving and approach play) explain most of the variation in scoring among PGA Tour players, with putting playing a smaller—though still meaningful—role.
 
 At the same time, official reports from the USGA and R&A document a steady **increase in driving distance** on professional tours since the early 2000s, raising questions about how distance, strategy, and course set-up interact in the modern game.
 
