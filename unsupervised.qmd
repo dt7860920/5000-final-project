@@ -35,7 +35,7 @@ pga.head()
 
 ### Filter Features
 
-Clustering performance profiles requires choosing a set of features that capture how players **actually play golf**, not just whether they happen to win in a given season. For this reason, I include the following variables:
+Clustering performance profiles requires choosing a set of features that capture how players actually play golf, not just whether they happen to win in a given season. For this reason, I include the following variables:
 
 -   **scoring** – scoring average (strokes per round)
 
@@ -81,7 +81,7 @@ Standardization transforms each variable to have:
 
 -   Mean ≈ 0
 
-    Standard deviation ≈ 1
+-   Standard deviation ≈ 1
 
 This is especially important for K-Means, which uses Euclidean distance in feature space. Without scaling, variables with larger numerical ranges (like scoring or driving distance) would dominate the distance computation and overshadow more subtle but important statistics like strokes gained.
 
@@ -98,7 +98,7 @@ For k from 2 to 9, I:
 
 1.  Fit a K-Means model with `n_clusters = k` on the scaled data
 
-2.  Record the **inertia** (within-cluster sum of squared distances)
+2.  Record the inertia (within-cluster sum of squared distances)
 
 Plotting inertia against k typically shows a rapidly decreasing curve that then begins to “bend” or “flatten” — the “elbow.” That elbow represents a good trade-off between model complexity (more clusters) and compactness (lower within-cluster variance).
 

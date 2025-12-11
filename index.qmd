@@ -22,12 +22,6 @@ One of the most important developments in this transition is the strokes gained 
 
 At the same time, official reports from the USGA and R&A document a steady increase in driving distance on professional tours since the early 2000s, raising questions about how distance, strategy, and course set-up interact in the modern game.
 
-This project builds on that context by using publicly available PGA Tour summary datasets (2007–2022) to ask:
-
--   How have key performance metrics such as driving distance and strokes gained evolved over time?
--   Which metrics are most strongly associated with lower scoring?
--   What separates winners from the rest of the field in the modern PGA Tour environment?
-
 By combining data cleaning, exploratory analysis, unsupervised learning (player clustering), and supervised models (scoring and win prediction), the project aims to connect high-level trends in the sport with practical performance insights for coaches, analysts, and competitive players.
 
 ## 1.2 Research Questions
